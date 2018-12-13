@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<GridPane alignment="TOP_LEFT" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Введите немецкое слово:" GridPane.columnIndex="0" />
+       <TextField fx:id="field" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+       <Button fx:id="btn" alignment="BOTTOM_RIGHT" onAction="#click" text="Перевод" GridPane.columnIndex="5" GridPane.columnSpan="1" GridPane.rowIndex="1" />
+       <Text fx:id="rtn_text" wrappingWidth="330.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="2" GridPane.rowSpan="2">
+         <effect>
+            <Blend mode="LIGHTEN" opacity="0.0" />
+         </effect></Text>
+   </children>
+</GridPane>
