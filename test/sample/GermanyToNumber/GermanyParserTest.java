@@ -18,12 +18,16 @@ class GermanyParserTest {
         // create a Nashorn script engine
         ScriptEngine engine = factory.getEngineByName("nashorn");
         // evaluate JavaScript statement
+        int k = 0;
+        String nem = "";
         try {
             engine.eval(getStrNum());
             Invocable invocable = (Invocable) engine;
 
             for (int i = 1; i < 1000; i++) {
+                k = i;
                 Object result = invocable.invokeFunction("m", String.valueOf(i));
+                nem = result.toString();
 //                String res = split(result.toString());
                 String repRes = split(result.toString())
                         .replace('ß', 'b')
@@ -41,7 +45,7 @@ class GermanyParserTest {
             }
         } catch (final Exception se) {
             se.printStackTrace();
-            fail("Тест выбросил исключение");
+            fail("Тест выбросил исключение на числе c номером " + k + " нем: " + nem);
         }
     }
 

@@ -22,7 +22,7 @@
    </rowConstraints>
    <children>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Введите немецкое слово:" GridPane.columnIndex="0" />
-       <TextField fx:id="field" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+       <TextField fx:id="field" onKeyPressed="#keyPress" GridPane.columnSpan="5" GridPane.rowIndex="1" />
        <Button fx:id="btn" alignment="BOTTOM_RIGHT" onAction="#click" text="Перевод" GridPane.columnIndex="5" GridPane.columnSpan="1" GridPane.rowIndex="1" />
        <Text fx:id="rtn_text" wrappingWidth="330.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="2" GridPane.rowSpan="2">
          <effect>

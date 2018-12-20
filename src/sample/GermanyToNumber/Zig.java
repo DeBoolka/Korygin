@@ -2,7 +2,7 @@ package sample.GermanyToNumber;
 
 class Zig {
     static int parse(Words words, int num) throws Ex {
-        String wordsArray[] = words.getWords();
+        String[] wordsArray = words.getWords();
         String zig = GermanyParser.ZIG;
         String simpleNum = wordsArray[0].substring(0, wordsArray[0].length() - zig.length());
 
@@ -14,26 +14,22 @@ class Zig {
 
 
         num += Simple.getSimpleNum(simpleNum, GermanyParser.ZIG) * 10;
+        findError(wordsArray, words);
         words.move(1);
         wordsArray = words.getWords();
 
-        findError(wordsArray, words);
 
         return GermanyParser.parse(words, num);
     }
 
-    private static void findError(String[] wordsArray, Words words) throws InvalidPosition {
-        if (GermanyParser.checkNextRank(GermanyParser.ZIG, wordsArray, GermanyParser.ZIG)) {
-            throw new InvalidPosition("После числа десятичного формата не может идти число десятичного формата", words, 0);
-        } else if (GermanyParser.checkNextRank(GermanyParser.HUNDRED, wordsArray, GermanyParser.HUNDRED)) {
-            throw new InvalidPosition("После числа десятичного формата не может идти число соттеного формата", words, 1);
-        } else if (GermanyParser.checkNextRank(GermanyParser.ZEHN, wordsArray, GermanyParser.ZEHN)) {
-            throw new InvalidPosition("После числа десятичного формата не может идти число формата 13-19", words, 1);
-        } else if (GermanyParser.checkNextRank(GermanyParser.SIMPLE, wordsArray, GermanyParser.SIMPLE)) {
-            throw new InvalidPosition("После числа десятичного формата не может идти число еденичного формата", words, 0);
-        } else if (GermanyParser.checkNextRank(GermanyParser.UND, wordsArray, GermanyParser.UND)) {
-            throw new InvalidPosition("После числа десятичного формата не может идти und", words, 1);
-        }
+    public static void findError(String[] wordsArray, Words words) throws InvalidPosition {
+        if (GermanyParser.checkBackRank(GermanyParser.ZIG, words, GermanyParser.ZIG)) {
+            throw new InvalidPosition("Два числа десятичного формата", words, 0);
+        } else if (GermanyParser.checkBackRank(GermanyParser.ZEHN, words, GermanyParser.ZEHN)) {
+            throw new InvalidPosition("После числа формата 11-19 не может стоять число десятичного формата", words, 1);
+        } /*else if (!GermanyParser.checkBackRank(GermanyParser.UND, words, GermanyParser.UND)) {
+            throw new InvalidPosition("После числа с und должно идти число десятичного формата", words, 1);
+        }*/
     }
 
     static boolean isZig(String[] words) {

@@ -2,7 +2,7 @@ package sample.GermanyToNumber;
 
 class Simple {
     static int parse(Words words, int num) throws Ex {
-        String wordsArray[] = words.getWords();
+        String[] wordsArray = words.getWords();
 
         if (!Simple.fromInterval(wordsArray[0], 1, 12)) {
             throw new Ex("Неверно указано число", words, 0);
@@ -10,25 +10,23 @@ class Simple {
 
 
         num += Simple.getSimpleNum(wordsArray[0], GermanyParser.SIMPLE);
+        findError(wordsArray, words);
         words.move(1);
         wordsArray = words.getWords();
 
-        findError(wordsArray, words);
 
         return GermanyParser.parse(words, num);
     }
 
-    private static void findError(String[] wordsArray, Words words) throws InvalidPosition {
-        if (GermanyParser.checkNextRank(GermanyParser.UND, wordsArray, GermanyParser.UND)) {
-            throw new InvalidPosition("После числа еденичного формата не может идти und", words, 1);
-        } else if (GermanyParser.checkNextRank(GermanyParser.ZIG, wordsArray, GermanyParser.ZIG)) {
-            throw new InvalidPosition("После числа еденичного формата не может идти число десятичного формата", words, 0);
-        } else if (GermanyParser.checkNextRank(GermanyParser.HUNDRED, wordsArray, GermanyParser.HUNDRED)) {
-            throw new InvalidPosition("После числа еденичного формата не может идти число соттеного формата", words, 1);
-        } else if (GermanyParser.checkNextRank(GermanyParser.ZEHN, wordsArray, GermanyParser.ZEHN)) {
-            throw new InvalidPosition("После числа еденичного формата не может идти число формата 13-19", words, 1);
-        } else if (GermanyParser.checkNextRank(GermanyParser.SIMPLE, wordsArray, GermanyParser.SIMPLE)) {
-            throw new InvalidPosition("После числа еденичного формата не может идти число еденичного формата", words, 0);
+    public static void findError(String[] wordsArray, Words words) throws InvalidPosition {
+        if (GermanyParser.checkBackRank(GermanyParser.SIMPLE, words, GermanyParser.SIMPLE)) {
+            throw new InvalidPosition("Два числа еденичного формата.", words, 0);
+        } else if (GermanyParser.checkBackRank(GermanyParser.ZIG, words, GermanyParser.ZIG)) {
+            throw new InvalidPosition("После числа десятичного формата не может стоять число еденичного формата.", words, 0);
+        }  else if (GermanyParser.checkBackRank(GermanyParser.ZEHN, words, GermanyParser.ZEHN)) {
+            throw new InvalidPosition("После числа формата 11-19 не может стоять число еденичного формата.", words, 0);
+        }  else if (GermanyParser.checkBackRank(GermanyParser.UND, words, GermanyParser.UND)) {
+            throw new InvalidPosition("После числа с und не может стоять число еденичного формата.", words, 0);
         }
     }
 

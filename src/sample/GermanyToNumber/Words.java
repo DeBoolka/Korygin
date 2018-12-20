@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 class Words {
 
-    private final String words[];
+    private final String[] words;
 
     private int start = 0;
 

@@ -1,5 +1,7 @@
 package sample.GermanyToNumber;
 
+import java.util.Arrays;
+
 public class GermanyParser {
 
     static final String HUNDRED = "hundert";
@@ -7,6 +9,7 @@ public class GermanyParser {
     static final String ZEHN = "zehn";
     static final String ZIG = "zig";
     static final String SIMPLE = "simple";
+    static final String[] ALL = new String[]{HUNDRED, UND, ZEHN, ZIG, SIMPLE};
 
     public static int getNumber(String text) throws Ex {
         String wordsArr[] = text.trim().toLowerCase()
@@ -30,24 +33,42 @@ public class GermanyParser {
             return num;
         }
 
-        if (checkNextRank(HUNDRED, wordsArr, ranks)) {
-            num = Hundred.parse(words, num);
-        } else if (checkNextRank(UND, wordsArr, ranks)) {
-            num = Und.parse(words, num);
-        } else if (checkNextRank(ZIG, wordsArr, ranks)) {
+        if (checkNextRank(ZIG, wordsArr, ranks)) {
             num = Zig.parse(words, num);
         } else if (checkNextRank(ZEHN, wordsArr, ranks)) {
             num = Zehn.parse(words, num);
+        } else if (checkNextRank(HUNDRED, wordsArr, ranks)) {
+            num = Hundred.parse(words, num);
+        } else if (checkNextRank(UND, wordsArr, ranks)) {
+            num = Und.parse(words, num);
         } else if (checkNextRank(SIMPLE, wordsArr, ranks)) {
             num = Simple.parse(words, num);
         } else {
-            throw error(words, num, ranks);
+            throw error(words, num, ranks, wordsArr);
         }
 
         return num;
     }
 
-    private static Ex error(Words words, int num, String[] ranks) {
+    private static Ex error(Words words, int num, String[] ranks, String[] wordsArr) throws InvalidPosition {
+        if (wordsArr.length > 0) {
+            if (Zehn.isZehn(wordsArr)) {
+//                words.move(-1);
+                Zehn.findError(wordsArr, words);
+            } else if (Zig.isZig(wordsArr)) {
+//                words.move(-1);
+                Zig.findError(wordsArr, words);
+            } else if (Simple.isSimple(wordsArr)) {
+//                words.move(-1);
+                Simple.findError(wordsArr, words);
+            } else if (!wordsArr[0].equals(HUNDRED) && Und.isUnd(wordsArr)) {
+//                words.move(-2);
+                Und.findError(wordsArr, words);
+            } else if (!wordsArr[0].equals(UND) && Hundred.isHundred(wordsArr)) {
+//                words.move(-2);
+                Hundred.findError(wordsArr, words);
+            }
+        }
         return new InvalidPosition("Ошибка в слове.", words, 0, true);
     }
 
@@ -57,19 +78,35 @@ public class GermanyParser {
         }
 
         switch (rank) {
-            case HUNDRED:
-                return Hundred.isHundred(words);
-            case UND:
-                return Und.isUnd(words);
             case ZIG:
                 return Zig.isZig(words);
             case ZEHN:
                 return Zehn.isZehn(words);
             case SIMPLE:
                 return Simple.isSimple(words);
+            case UND:
+                return Und.isUnd(words);
+            case HUNDRED:
+                return Hundred.isHundred(words);
             default:
                 return false;
         }
+    }
+
+    static boolean checkBackRank(String rank, Words words, String... ranks) {
+        String[] text = words.getWords(true);
+        int startW = words.getStart();
+        if (startW == 0) {
+            return false;
+        }
+
+        if (startW > 0 && !rank.equals(HUNDRED) && !rank.equals(UND)) {
+            return GermanyParser.checkNextRank(rank, Arrays.copyOfRange( text, startW - 1, text.length), ALL);
+        } else if (startW > 1) {
+            return GermanyParser.checkNextRank(rank, Arrays.copyOfRange( text, startW - 2, text.length), ALL);
+        }
+
+        return false;
     }
 
     private static int containsCountWord(String[] words, String word, int numWord) {
